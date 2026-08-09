@@ -1,0 +1,65 @@
+GenAI Batch-2 Manager
+00:08:20
+Hi, Mayuk, we can start.
+Mayukh Ghosh
+Mayukh Ghosh
+00:08:27
+Okay, yeah, sure, alright.
+Just give me a minute, I'll turn the video on.
+Alright.
+So, yeah, hi everyone, good evening.
+So, my name is Mayuk, as you can already see.
+I understand, so you have just began this program, and…
+It is a progression to generative AI, which is the name of the program, so, yeah.
+No… After the next set of data comes in, the new set of data comes in for your variables.
+So, okay, I'll show it to you, and then come back there. Maybe, maybe in the last 15-20 minutes, we'll do a bit of those things.
+Mayukh Ghosh
+Mayukh Ghosh
+01:42:21
+So, say this 5… I'll put the age of these 5 people. Say, 87.
+I will… I will open a different data set, I will open a real sample data, and I'll…
+Then you go into outliers and missing values.
+Sai Gowtham
+Sai Gowtham
+02:28:01
+But again.
+Sai Gowtham
+Sai Gowtham
+02:28:13
+and…
+Everything is unique.
+So every yardstick is also unique.
+Sai Gowtham
+Sai Gowtham
+02:28:23
+Okay.
+Mayukh Ghosh
+Mayukh Ghosh
+02:28:27
+Okay, I hope you…
+knew a few things, you tried to con… what I tried is that you… for you to connect a few things. I hope that has happened to some extent, at least, if not entirely.
+And more than that, what I hope is that you sort of enjoyed the part. That is most important for me, okay? You enjoyed the introduction and sort of take some leaves out of it, okay?
+I hope that has happened.
+Pawan Misra
+Pawan Misra
+02:28:56
+Yes, it's thanks.
+Chandrasekhar Sahu
+Chandrasekhar Sahu
+02:28:57
+Yes, thank you.
+Mayukh Ghosh
+Mayukh Ghosh
+02:28:59
+Okay, alright, good, good to know that. Jello, thank you, then, alright, we'll log off for now, and yeah, thanks, and all the best.
+YN
+yogan naik
+02:29:06
+Thank you.
+SK
+Swagat kumar pattnaik
+02:29:07
+Thank you, Maya. Me too.
+Rupesh Kumar
+Rupesh Kumar
+Thank you.
