@@ -31,12 +31,61 @@ CLASS_NOTE_USER_TEMPLATE = (
     "Important: output only valid Markdown with headings and bullets."
 )
 
+MAX_TRANSCRIPT_CHARS = 14000
+
 
 def build_class_notes_prompt(transcript_text: str) -> str:
     transcript_text = transcript_text.strip()
-    if len(transcript_text) > 20000:
-        transcript_text = transcript_text[:20000].rsplit("\n", 1)[0]
     return CLASS_NOTE_USER_TEMPLATE.format(transcript=transcript_text)
+
+
+def split_transcript_text(transcript_text: str, max_chars: int = MAX_TRANSCRIPT_CHARS) -> list[str]:
+    transcript_text = transcript_text.strip()
+    if len(transcript_text) <= max_chars:
+        return [transcript_text]
+
+    paragraphs = [p.strip() for p in transcript_text.split("\n\n") if p.strip()]
+    chunks: list[str] = []
+    current_chunk = ""
+
+    for paragraph in paragraphs:
+        if len(paragraph) > max_chars:
+            # fallback split long paragraphs by lines when a single paragraph is too long
+            lines = [line.strip() for line in paragraph.splitlines() if line.strip()]
+            for line in lines:
+                if len(current_chunk) + len(line) + 2 > max_chars:
+                    if current_chunk:
+                        chunks.append(current_chunk.strip())
+                    current_chunk = line + "\n\n"
+                else:
+                    current_chunk += line + "\n\n"
+        elif len(current_chunk) + len(paragraph) + 2 > max_chars:
+            chunks.append(current_chunk.strip())
+            current_chunk = paragraph + "\n\n"
+        else:
+            current_chunk += paragraph + "\n\n"
+
+    if current_chunk:
+        chunks.append(current_chunk.strip())
+
+    return chunks
+
+
+def create_class_notes_for_long_transcript(transcript_text: str, model: str) -> str:
+    chunks = split_transcript_text(transcript_text)
+    if len(chunks) == 1:
+        return create_class_notes(chunks[0], model=model)
+
+    logger.info("Transcript split into %d chunks for LLM processing", len(chunks))
+    parts = []
+    for index, chunk in enumerate(chunks, start=1):
+        logger.info("Generating notes for chunk %d/%d", index, len(chunks))
+        chunk_notes = create_class_notes(chunk, model=model)
+        parts.append(f"## Segment {index}\n\n{chunk_notes}")
+
+    combined = ["# Combined Class Notes", "", "Generated from a long transcript split into multiple chunks.", ""]
+    combined.extend(parts)
+    return "\n\n".join(combined)
 
 
 def create_class_notes(transcript_text: str, model: str = "nvidia/nemotron-3-ultra-550b-a55b") -> str:
@@ -70,7 +119,7 @@ def create_class_notes(transcript_text: str, model: str = "nvidia/nemotron-3-ult
 
 def create_class_notes_from_file(transcript_path: Path, output_path: Path, model: str = "nvidia/nemotron-3-ultra-550b-a55b") -> Path:
     transcript_text = transcript_path.read_text(encoding="utf-8", errors="ignore")
-    markdown = create_class_notes(transcript_text, model=model)
+    markdown = create_class_notes_for_long_transcript(transcript_text, model=model)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(markdown, encoding="utf-8")
     return output_path
