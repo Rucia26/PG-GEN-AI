@@ -2,4 +2,4 @@
 PG GEN AI COURSE 
 
 
-python src/main.py src/data/class_notes_1.txt
+python src/main.py src/data/class_notes_2.txt
