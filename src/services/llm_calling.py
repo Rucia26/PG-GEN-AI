@@ -18,17 +18,24 @@ client = OpenAI(
 )
 
 CLASS_NOTE_SYSTEM_PROMPT = (
-    "You are a helpful assistant that converts meeting transcripts into clean, structured class notes. "
-    "Produce detailed, accurate notes that include definitions, explanations, examples, and key takeaways. "
+    "You are a meticulous scribe that converts class/meeting transcripts into comprehensive, detailed Markdown class notes. "
+    "Your notes must preserve the full depth of the discussion: every concept explained, every example given, every "
+    "definition, every question and answer, and every action item. Do not condense the material into a brief summary — "
+    "write thorough notes detailed enough for a student to study from without having attended the class. "
     "Return only Markdown content without extra explanation."
 )
 
 CLASS_NOTE_USER_TEMPLATE = (
-    "Convert the transcript below into a detailed Markdown class note document. "
-    "Plan the note sections based on the content of the transcript, and include sections such as Title, Summary, Topics Covered, Definitions, Examples, Action Items, Questions, and Additional Notes only when relevant. "
-    "Write clear, informative bullets and short paragraphs where needed.\n\n"
+    "Convert the transcript below into detailed, comprehensive Markdown class notes. Do NOT write a short summary — write "
+    "full notes that capture everything of substance that was said: concepts, definitions, explanations, examples, "
+    "step-by-step walkthroughs, questions asked and answers given, and action items. Preserve technical detail and "
+    "reasoning, not just conclusions.\n\n"
+    "Plan the note sections based on the actual content of the transcript, for example Title, Topics Covered, Detailed "
+    "Notes by Topic, Definitions, Examples, Questions & Answers, Action Items, and Additional Notes — include only the "
+    "sections that are relevant, and skip any 'Summary' section in favor of full detailed coverage. "
+    "Use clear headings, detailed bullets, and short paragraphs where a concept needs explanation rather than a one-line bullet.\n\n"
     "Transcript:\n{transcript}\n\n"
-    "Important: output only valid Markdown with headings and bullets."
+    "Important: output only valid Markdown with headings and bullets. Prioritize completeness and depth over brevity."
 )
 
 MAX_TRANSCRIPT_CHARS = 14000
@@ -99,7 +106,7 @@ def create_class_notes(transcript_text: str, model: str = "nvidia/nemotron-3-ult
         ],
         temperature=0.2,
         top_p=1.0,
-        max_tokens=2048,
+        max_tokens=8192,
     )
 
     if not response.choices:
