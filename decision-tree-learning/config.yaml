@@ -1,0 +1,26 @@
+# ---------------------------------------------------------------------------
+# Central configuration for the decision-tree-learning project.
+#
+# WHY THIS FILE EXISTS
+# Hard-coding paths and hyperparameters directly inside .py files means that
+# changing them later requires editing code, re-reading code to remember what
+# was tried, and risking accidental edits to logic while tweaking a number.
+# By keeping every "knob" here, the code always reads settings the same way,
+# experiments are reproducible (you can save a copy of this file per
+# experiment), and non-programmers could adjust behavior without touching
+# Python at all.
+# ---------------------------------------------------------------------------
+
+data:
+  raw_path: data/raw/telco_churn.csv
+  processed_path: data/processed/processed_data.csv
+  target_column: Churn
+  id_column: customerID
+
+model:
+  random_state: 42   # fixes randomness (train/test split, tree building) so results are reproducible
+  test_size: 0.2      # 20% of data held out for testing, never seen during training
+
+logging:
+  level: INFO
+  log_file: logs/ml_project.log

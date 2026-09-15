@@ -1,0 +1,26 @@
+# This .gitignore is scoped to decision-tree-learning/. The repo root already
+# ignores __pycache__, *.log, .ipynb_checkpoints, and venv/ — this file adds
+# rules specific to an ML project: we don't want to commit raw/processed data
+# or trained model binaries, since they're either large, regeneratable from
+# code, or both. Keeping data and models out of git is standard ML practice:
+# the pipeline (code) is versioned, the data and artifacts are not.
+
+# Raw and processed data (keep the folders via .gitkeep, ignore their contents)
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+data/external/*
+!data/external/.gitkeep
+
+# Trained model artifacts (regeneratable by re-running the notebooks)
+models/trained/*
+!models/trained/.gitkeep
+
+# Generated reports (regeneratable)
+reports/figures/*
+!reports/figures/.gitkeep
+reports/model_comparison.csv
+
+# Logs (regeneratable, and can grow large during experimentation)
+logs/*.log
