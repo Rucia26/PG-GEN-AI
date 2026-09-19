@@ -130,7 +130,7 @@ def encode_categorical_features(
     encoding equivalent of "fit on train, transform on test."
     """
     categorical_columns = training_features.select_dtypes(include="object").columns.tolist()
-    logger.info("One-hot encoding %d categorical column(s)", len(categorical_columns))
+    logger.debug("One-hot encoding %d categorical column(s)", len(categorical_columns))
 
     encoded_training = pd.get_dummies(training_features, columns=categorical_columns)
     encoded_testing = pd.get_dummies(testing_features, columns=categorical_columns)

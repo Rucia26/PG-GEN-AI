@@ -148,6 +148,50 @@ def plot_decision_tree(classifier, feature_names: list[str], max_depth: int | No
     return figure
 
 
+def plot_grid_search_heatmap(
+    cv_results_df: pd.DataFrame,
+    row_param: str,
+    col_param: str,
+    score_column: str = "mean_test_score",
+    title: str | None = None,
+) -> plt.Figure:
+    """
+    Heatmap of mean CV score across two hyperparameters from GridSearchCV.
+
+    Parameters
+    ----------
+    cv_results_df : pd.DataFrame
+        `pd.DataFrame(grid_search.cv_results_)`. May contain rows for other
+        hyperparameter combinations too — those are averaged away by the
+        pivot below, so pass the full results and pick the two params to
+        visualize with `row_param`/`col_param`.
+    row_param : str
+        Hyperparameter name (without the "param_" prefix) for the rows.
+    col_param : str
+        Hyperparameter name (without the "param_" prefix) for the columns.
+    score_column : str
+        Column in `cv_results_df` to plot, e.g. "mean_test_score".
+    title : str | None
+        Plot title. Defaults to a description of the two params.
+
+    Returns
+    -------
+    plt.Figure
+        The created figure.
+    """
+    pivot = cv_results_df.pivot_table(
+        index=f"param_{row_param}", columns=f"param_{col_param}", values=score_column, aggfunc="mean",
+    )
+
+    figure, axes = plt.subplots(figsize=(7, 5))
+    sns.heatmap(pivot, annot=True, fmt=".3f", cmap="YlGnBu", ax=axes)
+    axes.set_xlabel(col_param)
+    axes.set_ylabel(row_param)
+    axes.set_title(title or f"Mean CV Score — {row_param} vs. {col_param}")
+    figure.tight_layout()
+    return figure
+
+
 def plot_model_comparison(comparison_df: pd.DataFrame) -> plt.Figure:
     """
     Plot a grouped bar chart comparing metrics across multiple models.
