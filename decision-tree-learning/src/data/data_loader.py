@@ -1,11 +1,11 @@
 """
-Load the raw customer churn dataset from disk.
+Load the raw Telco Customer Churn dataset from disk.
 
-This module is intentionally small: its only job is turning a CSV file into
-a pandas DataFrame and telling us what happened. Cleaning, encoding, and
-feature engineering all live in src/preprocessing/ — keeping "read the file"
-separate from "fix the file" makes each step independently testable and
-easy to reason about.
+This module has exactly one responsibility: turn a CSV file on disk into a
+pandas DataFrame. It does not clean data, engineer features, or validate
+business rules — that separation means a bug in "is this CSV readable" can
+never be confused with a bug in "does this data make sense" (data_validator.py
+owns that instead).
 """
 
 from __future__ import annotations
@@ -14,44 +14,47 @@ from pathlib import Path
 
 import pandas as pd
 
+from src.config.settings import SETTINGS
 from src.utils.logger import get_logger
 
 logger = get_logger(__name__)
 
 
-def load_dataset(file_path: str | Path) -> pd.DataFrame:
+def load_dataset(file_path: str | Path | None = None) -> pd.DataFrame:
     """
     Load the customer churn dataset from a CSV file.
 
     Parameters
     ----------
-    file_path : str | Path
-        Path to the input CSV file (e.g. SETTINGS.data.raw_path).
+    file_path : str | Path | None
+        Path to the input CSV file. Defaults to the raw data path configured
+        in config.yaml (SETTINGS.data.raw_path) so callers don't need to know
+        the path themselves.
 
     Returns
     -------
     pd.DataFrame
-        The dataset exactly as stored on disk — no cleaning applied yet.
+        The raw, unmodified customer dataset — exactly what is on disk.
 
     Raises
     ------
     FileNotFoundError
-        If no file exists at file_path. This is deliberately allowed to
-        propagate (rather than being caught and hidden) so that a missing
-        dataset fails loudly and immediately, instead of causing a
-        confusing error several steps later in the pipeline.
+        If no file exists at the resolved path. Raised explicitly (rather
+        than letting pandas' own FileNotFoundError propagate silently) so the
+        error message tells you which path was actually checked, since the
+        path is often built from config rather than typed directly.
     """
-    file_path = Path(file_path)
-    logger.info("Loading dataset from %s", file_path)
+    resolved_path = Path(file_path) if file_path is not None else SETTINGS.data.raw_path
 
-    if not file_path.exists():
-        logger.error("Dataset file not found at %s", file_path)
+    if not resolved_path.exists():
+        logger.error("Dataset not found at %s", resolved_path)
         raise FileNotFoundError(
-            f"No dataset found at {file_path}. "
-            "Place the Telco Customer Churn CSV there before running the pipeline."
+            f"No dataset file at '{resolved_path}'. "
+            "Did you download telco_churn.csv into data/raw/?"
         )
 
-    dataframe = pd.read_csv(file_path)
+    logger.info("Loading dataset from %s", resolved_path)
+    dataframe = pd.read_csv(resolved_path)
     logger.info("Dataset loaded successfully. Shape: %s", dataframe.shape)
 
     return dataframe
